@@ -1,42 +1,59 @@
 import os
 import sys
+import logging
 from PIL import Image
 from reportlab.pdfgen import canvas
 
+# Set up logging
+logging.basicConfig(
+    filename='imageToPdf.log',  # Log file name
+    level=logging.DEBUG,        # Log level
+    format='%(asctime)s - %(levelname)s - %(message)s'  # Log format
+)
 
 def images_to_pdf(input_dir: str) -> None:
-    # Get the name of the parent directory
-    output_pdf = f'{input_dir.split("/")[-1]}.pdf'
+    try:
+        logging.info(f"Starting conversion in: {input_dir}")
+        # Get the name of the parent directory
+        output_pdf = f'{input_dir.split("/")[-1]}.pdf'
 
-    # Change the working directory to the input directory
-    os.chdir(input_dir)
+        # Change the working directory to the input directory
+        os.chdir(input_dir)
 
-    # Get a list of all image files in the specified directory
-    image_list = [f for f in os.listdir('..') if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
+        for filename in os.listdir(input_dir):
+            if filename.endswith('.jpg') or filename.endswith('.png'):
+                logging.info(f"Found image: {filename}")
 
-    # Sort the images to maintain order
-    image_list.sort()
+        # Get a list of all image files in the specified directory
+        image_list = [f for f in os.listdir('..') if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
 
-    # Create a canvas for the PDF
-    c = canvas.Canvas(output_pdf)
+        # Sort the images to maintain order
+        image_list.sort()
 
-    for image_path in image_list:
-        # Open the image
-        img = Image.open(image_path)
-        width, height = img.size
+        # Create a canvas for the PDF
+        c = canvas.Canvas(output_pdf)
 
-        # Set the page size to the size of the image
-        c.setPageSize((width, height))
+        for image_path in image_list:
+            # Open the image
+            img = Image.open(image_path)
+            width, height = img.size
 
-        # Draw the image on the PDF
-        c.drawImage(image_path, 0, 0)
+            # Set the page size to the size of the image
+            c.setPageSize((width, height))
 
-        # End the current page
-        c.showPage()
+            # Draw the image on the PDF
+            c.drawImage(image_path, 0, 0)
 
-    # Save the PDF
-    c.save()
-    print(f'PDF created: {output_pdf}')
+            # End the current page
+            c.showPage()
+
+        # Save the PDF
+        c.save()
+        print(f'PDF created: {output_pdf}')
+        logging.info(f'PDF created: {output_pdf}')
+        logging.info("Conversion completed successfully.")
+    except Exception as e:
+        logging.error("An error occurred", exc_info=True)
 
 
 if __name__ == "__main__":
