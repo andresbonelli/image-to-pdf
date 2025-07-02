@@ -12,7 +12,7 @@ def images_to_pdf(input_dir: str) -> None:
     os.chdir(input_dir)
 
     # Get a list of all image files in the specified directory
-    image_list = [f for f in os.listdir('.') if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
+    image_list = [f for f in os.listdir('..') if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
 
     # Sort the images to maintain order
     image_list.sort()

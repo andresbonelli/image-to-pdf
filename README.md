@@ -19,5 +19,5 @@ pip install -r requirements.txt
 ```
 
 ```commandline
-pyinstaller --onefile imageToPdf.py
+pyinstaller --onefile src/main.py
 ```
