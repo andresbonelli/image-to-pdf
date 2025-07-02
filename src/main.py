@@ -25,10 +25,7 @@ def images_to_pdf(input_dir: str) -> None:
                 logging.info(f"Found image: {filename}")
 
         # Get a list of all image files in the specified directory
-        image_list = [f for f in os.listdir('..') if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
-
-        # Sort the images to maintain order
-        image_list.sort()
+        image_list = [f for f in os.listdir(input_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
 
         # Create a canvas for the PDF
         c = canvas.Canvas(output_pdf)
