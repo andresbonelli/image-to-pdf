@@ -11,7 +11,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'  # Log format
 )
 
-def images_to_pdf(input_dir: str) -> None:
+def images_to_pdf(input_dir: str, batch_size: int = 10) -> None:
     try:
         logging.info(f"Starting conversion in: {input_dir}")
         # Get the name of the parent directory
@@ -30,20 +30,26 @@ def images_to_pdf(input_dir: str) -> None:
         # Create a canvas for the PDF
         c = canvas.Canvas(output_pdf)
 
-        for image_path in image_list:
-            # Open the image
-            img = Image.open(image_path)
-            width, height = img.size
+        # Process images in batches
+        for i in range(0, len(image_list), batch_size):
+            batch = image_list[i:i + batch_size]
+            for filename in batch:
+                image_path = os.path.join(input_dir, filename)
+                if os.path.exists(image_path):
+                    logging.info(f"Found image: {filename}")
+                    with Image.open(image_path) as img:
+                        width, height = img.size
 
-            # Set the page size to the size of the image
-            c.setPageSize((width, height))
+                        # Set the page size to the size of the image
+                        c.setPageSize((width, height))
 
-            # Draw the image on the PDF
-            c.drawImage(image_path, 0, 0)
+                        # Draw the image on the PDF
+                        c.drawImage(image_path, 0, 0)
 
-            # End the current page
-            c.showPage()
-
+                        # End the current page
+                        c.showPage()
+                else:
+                    logging.error(f"File not found: {image_path}")
         # Save the PDF
         c.save()
         print(f'PDF created: {output_pdf}')
