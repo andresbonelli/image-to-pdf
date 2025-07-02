@@ -15,7 +15,7 @@ def images_to_pdf(input_dir: str, batch_size: int = 10) -> None:
     try:
         logging.info(f"Starting conversion in: {input_dir}")
         # Get the name of the parent directory
-        output_pdf = f'{input_dir.split("/")[-1]}.pdf'
+        output_pdf = os.path.join(input_dir, f'{os.path.basename(input_dir)}.pdf')
 
         # Change the working directory to the input directory
         os.chdir(input_dir)
